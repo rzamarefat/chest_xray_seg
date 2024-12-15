@@ -10,7 +10,7 @@
 
 ### Training Results
 #### UNET++
-![Cat Image](./assets/unet++_train_val_loss.png)
+![unet++_train_val_loss](./assets/unet++_train_val_loss.png)
 #### YOLOv11
 #### YOLOv8
 
