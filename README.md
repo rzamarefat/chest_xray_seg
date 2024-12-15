@@ -5,8 +5,8 @@
 ### Models
 
 - [x] UNET++
-- [] YOLOv8
-- [] YOLOv11
+- [-] YOLOv8
+- [-] YOLOv11
 
 ### Training Results
 #### UNET++
