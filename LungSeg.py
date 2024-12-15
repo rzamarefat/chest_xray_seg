@@ -19,7 +19,6 @@ class LungSeg:
             ])
 
     def _preprocess(self, images):
-        
         tensors = []
 
         for img in images:
@@ -27,69 +26,46 @@ class LungSeg:
             transformed = transformed["image"].astype('float32') / 255
             transformed = transformed.transpose(2, 0, 1)
             transformed_tensor = torch.Tensor(transformed)
-            # transformed_tensor = transformed_tensor.permute(2, 0, 1)
-
-
-            print("transformed_tensor.shape", transformed_tensor.shape)
-
             
             tensors.append(transformed_tensor)
-
-        # Stack all tensors into a single batch tensor
         batch_tensor = torch.stack(tensors)
+
         return batch_tensor
 
+    def __call__(self, imgs):
 
-        #     # Normalize pixel values to [0, 255] for visualization (if needed)
-        #     processed_image = np.clip(transformed_image * 255, 0, 255).astype(np.uint8)
-
-        #     # Convert back to PIL.Image for display
-        #     processed_images.append(Image.fromarray(processed_image))
-
-        # return processed_images
-
-    def __call__(self, pil_imgs):
+        # cv2_imgs = []
+        # for img in imgs:
+        #     bgr_image = np.array(img)[..., ::-1]
+        #     # bgr_image = Image.fromarray(bgr_image)
+        #     cv2_imgs.append(bgr_image)
         
-        model_input = self._preprocess(pil_imgs)
+        model_input = self._preprocess(imgs)
 
         print(model_input.shape)
 
         with torch.no_grad():
             model_input = model_input.to(self._device)
             output = self._model(model_input)
-            print("output.shape11", output.shape)
             output = torch.sigmoid(output).cpu().numpy()
 
             
-
+            predicted_masks_holder = []
             for i in range(len(output)):
                 for c in range(1):
-                    print("output[i, c].shape", output[i, c].shape)
-                    print("np.max(output[i, c] * 255)", np.max(output[i, c] * 255))
-                    cv2.imwrite(f"mask_{i}.png",
-                                (output[i, c] * 255).astype('uint8'))
+                    predicted_masks_holder.append((output[i, c] * 255).astype('uint8'))
 
-
-        # with torch.no_grad():
-        #     for input, target, meta in val_loader:
-        #         input = input.cuda()
-        #         target = target.cuda()
-        #         output = self._model(input)
-
-                
-
-                # output = torch.sigmoid(output).cpu().numpy()
-                # for i in range(len(output)):
-                #     cv2.imwrite(os.path.join('outputs', config['name'], str(c), meta['img_id'][i] + '.jpg'),
-                #                 (output[i, 0] * 255).astype('uint8'))
-
-                # for i in range(len(output)):
-                #     cv2.imwrite(os.path.join('outputs', config['name'], str(c), meta['img_id'][i] + '.jpg'),(output[i, c] * 255).astype('uint8'))
+        return predicted_masks_holder
+                    
 
 if __name__ == "__main__":
-    # from PIL import Image
+    from PIL import Image
 
-    pil_img_1 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1000.png")
-    pil_img_2 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1001.png")
-    pil_img_3 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1002.png")
+    # pil_img_1 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1000.png")
+    # pil_img_2 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1001.png")
+    # pil_img_3 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1002.png")
+
+    pil_img_1 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1000.png")
+    pil_img_2 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1001.png")
+    pil_img_3 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1002.png")
     LungSeg()([pil_img_1, pil_img_2, pil_img_3])
