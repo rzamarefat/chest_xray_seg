@@ -9,7 +9,8 @@
 - [ ] YOLOv11
 
 ### Training Results
-#### UNET++
+- [x] #### UNET++
+
 ![unet++_train_val_loss](https://github.com/user-attachments/assets/8ce5aaef-eaab-4a23-af9a-ee2d44a98c43)
 #### YOLOv11
 
