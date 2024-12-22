@@ -56,16 +56,3 @@ class LungSeg:
                     predicted_masks_holder.append((output[i, c] * 255).astype('uint8'))
 
         return predicted_masks_holder
-                    
-
-if __name__ == "__main__":
-    from PIL import Image
-
-    # pil_img_1 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1000.png")
-    # pil_img_2 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1001.png")
-    # pil_img_3 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1002.png")
-
-    pil_img_1 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1000.png")
-    pil_img_2 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1001.png")
-    pil_img_3 = Image.open(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\Chest-X-Ray\Chest-X-Ray\image\1002.png")
-    LungSeg()([pil_img_1, pil_img_2, pil_img_3])

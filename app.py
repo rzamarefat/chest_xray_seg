@@ -5,12 +5,10 @@ from LungSeg import LungSeg
 
 lungseg = LungSeg()
 
-# Streamlit App
 st.title("Lung Segmentation")
 
 st.write("Segment Lung from X-Ray Images")
 
-# File Uploader
 uploaded_files = st.file_uploader("Choose images", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
 if uploaded_files:
