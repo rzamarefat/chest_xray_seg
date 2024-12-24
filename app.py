@@ -34,26 +34,17 @@ if uploaded_files:
         except Exception as e:
             st.error(f"Error loading {uploaded_file.name}: {e}")
 
-    # Analyze button
     if st.button("Analyze"):
         st.write("Analyzing and preprocessing images...")
-
-        # Convert images to a format compatible with LungSeg (OpenCV images)
         predicted_masks = lungseg(images)
 
-        # Clear previous images
         st.empty()
 
-        # Create columns for horizontal display of the output images
         num_columns = len(predicted_masks)
         cols = st.columns(num_columns)
 
-        # Display the predicted masks or processed images horizontally
         for i, (predicted_mask, col) in enumerate(zip(predicted_masks, cols)):
-            # Resize mask image for smaller display
             mask_resized = cv2.resize(predicted_mask, (300, 300))
-
-            # Convert the mask to RGB for visualization (if necessary)
             mask_rgb = cv2.cvtColor(mask_resized, cv2.COLOR_BGR2RGB)
 
             with col:

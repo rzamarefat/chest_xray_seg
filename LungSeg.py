@@ -4,10 +4,21 @@ from albumentations.core.composition import Compose
 from albumentations import Resize, Normalize
 import cv2
 import numpy as np
+from ultralytics import YOLO
 
 class LungSeg:
-    def __init__(self, device="cuda"):
+    def __init__(self, device="cuda", model_name="unetpp"):
         self._device = device
+        self._model_name = model_name
+
+        if self._model_name == "unetpp":
+            self._build_unetpp()
+        elif self._model_name == "yolo":
+            self._build_yolo()
+        else:
+            raise RuntimeError("Please provide a valid name for model_name")
+
+    def _build_unetpp(self):
         self._model = archs.__dict__["NestedUNet"](1,3,False)
         self._model.to(self._device)
         self._model.load_state_dict(torch.load(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\pytorch-nested-unet\models\dsb2018_96_NestedUNet_woDS\model.pth"))
@@ -17,6 +28,9 @@ class LungSeg:
                 Resize(256, 256),
                 Normalize(),
             ])
+        
+    def _build_yolo(self):
+        self._model = YOLO(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\yolo\runs\segment\large\weights\best.pt")
 
     def _preprocess(self, images):
         tensors = []
@@ -31,9 +45,8 @@ class LungSeg:
         batch_tensor = torch.stack(tensors)
 
         return batch_tensor
-
-    def __call__(self, imgs):
-
+    
+    def _segment_using_unetpp(self, imgs):
         # cv2_imgs = []
         # for img in imgs:
         #     bgr_image = np.array(img)[..., ::-1]
@@ -56,3 +69,17 @@ class LungSeg:
                     predicted_masks_holder.append((output[i, c] * 255).astype('uint8'))
 
         return predicted_masks_holder
+
+
+    def __call__(self, imgs):
+        if self._model_name == "unetpp":
+            predicted_masks_holder = self._segment_using_unetpp(imgs)
+        elif self._model_name == "yolo":
+            predicted_masks_holder = self._segment_using_yolo(imgs)
+
+        return predicted_masks_holder
+            
+
+            
+
+        
