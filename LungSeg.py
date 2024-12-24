@@ -91,14 +91,3 @@ class LungSeg:
 
         print(predicted_masks_holder[0].shape)
         return predicted_masks_holder
-            
-
-            
-
-        
-if __name__ == "__main__":
-    seg = LungSeg(model_name="yolo")
-    img_1 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\YOLO_format\val\1000.png")
-    img_2 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\YOLO_format\val\1020.png")
-    predicted_masks_holder = seg([img_1, img_2])
-    print(predicted_masks_holder)
