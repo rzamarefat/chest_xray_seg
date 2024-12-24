@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 from LungSeg import LungSeg
 
-lungseg = LungSeg()
+lungseg = LungSeg(model_name="yolo")
 
 st.title("Lung Segmentation")
 
@@ -44,6 +44,7 @@ if uploaded_files:
         cols = st.columns(num_columns)
 
         for i, (predicted_mask, col) in enumerate(zip(predicted_masks, cols)):
+            print("predicted_mask.shape", predicted_mask.shape)
             mask_resized = cv2.resize(predicted_mask, (300, 300))
             mask_rgb = cv2.cvtColor(mask_resized, cv2.COLOR_BGR2RGB)
 
@@ -51,3 +52,5 @@ if uploaded_files:
                 st.image(mask_rgb, caption=f"Processed Image {i + 1}", use_column_width=False)
 else:
     st.info("No images uploaded yet.")
+
+

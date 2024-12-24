@@ -55,8 +55,6 @@ class LungSeg:
         
         model_input = self._preprocess(imgs)
 
-        print(model_input.shape)
-
         with torch.no_grad():
             model_input = model_input.to(self._device)
             output = self._model(model_input)
@@ -69,17 +67,38 @@ class LungSeg:
                     predicted_masks_holder.append((output[i, c] * 255).astype('uint8'))
 
         return predicted_masks_holder
+    
+    def _segment_using_yolo(self, imgs):
+        preds = self._model.predict(imgs, retina_masks=True)
+        predicted_masks_holder = []
+        for pred in preds:
+            mask = pred.masks.data.cpu().numpy()[0]
+            mask *= 255
+            mask = mask.astype('uint8')
+
+            predicted_masks_holder.append(mask)
+
+        return predicted_masks_holder
+
 
 
     def __call__(self, imgs):
+        print(type(imgs))
         if self._model_name == "unetpp":
             predicted_masks_holder = self._segment_using_unetpp(imgs)
         elif self._model_name == "yolo":
             predicted_masks_holder = self._segment_using_yolo(imgs)
 
+        print(predicted_masks_holder[0].shape)
         return predicted_masks_holder
             
 
             
 
         
+if __name__ == "__main__":
+    seg = LungSeg(model_name="yolo")
+    img_1 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\YOLO_format\val\1000.png")
+    img_2 = cv2.imread(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\YOLO_format\val\1020.png")
+    predicted_masks_holder = seg([img_1, img_2])
+    print(predicted_masks_holder)
