@@ -10,6 +10,7 @@
 ## Training Results
 - UNET++
 ![unet++_train_val_loss](https://github.com/user-attachments/assets/8ce5aaef-eaab-4a23-af9a-ee2d44a98c43)
+- YOLOv11
 ![yolov11_train_val_loss](https://github.com/user-attachments/assets/2280d48d-36c7-458e-9d25-ffb7b0577b19)
 
 ## Visual Results on Test Samples
