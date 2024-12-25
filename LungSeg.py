@@ -2,15 +2,16 @@ import archs
 import torch
 from albumentations.core.composition import Compose
 from albumentations import Resize, Normalize
-import cv2
-import numpy as np
 from ultralytics import YOLO
+import os
+import gdown
 
 class LungSeg:
     def __init__(self, device="cuda", model_name="unetpp"):
         self._device = device
         self._model_name = model_name
 
+        os.makedirs(os.path.join(os.getcwd(), "weights"), exist_ok=True)
         if self._model_name == "unetpp":
             self._build_unetpp()
         elif self._model_name == "yolo":
@@ -19,9 +20,15 @@ class LungSeg:
             raise RuntimeError("Please provide a valid name for model_name")
 
     def _build_unetpp(self):
+        ckpt_path = os.path.join(os.getcwd(), "weights", "unetpp_large_lung_seg.pth")
+
+        if not(os.path.isfile(ckpt_path)):
+            ckpt_url="https://drive.google.com/uc?id=15nnzaU3MOlBTg49-QqMb6VnmvwiOuaDc"
+            gdown.download(ckpt_url, ckpt_path, quiet=False)
+
         self._model = archs.__dict__["NestedUNet"](1,3,False)
         self._model.to(self._device)
-        self._model.load_state_dict(torch.load(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\pytorch-nested-unet\models\dsb2018_96_NestedUNet_woDS\model.pth"))
+        self._model.load_state_dict(torch.load(ckpt_path))
         self._model.eval()
 
         self._val_transform = Compose([
@@ -30,7 +37,12 @@ class LungSeg:
             ])
         
     def _build_yolo(self):
-        self._model = YOLO(r"C:\Users\ASUS\Desktop\github_projects\chest_xray_seg\yolo\runs\segment\large\weights\best.pt")
+        ckpt_path = os.path.join(os.getcwd(), "weights", "yolov11_large_lung_seg.pt")
+        if not(os.path.isfile(ckpt_path)):
+            ckpt_url="https://drive.google.com/uc?id=1O7sRzdD47arMtVWRs-33dM0dQLVF1_wS"
+            gdown.download(ckpt_url, ckpt_path, quiet=False)
+
+        self._model = YOLO(ckpt_path)
 
     def _preprocess(self, images):
         tensors = []
