@@ -1,0 +1,8 @@
+albumentations==1.4.6
+gdown==5.2.0
+numpy==2.2.1
+opencv_python==4.10.0.84
+opencv_python_headless==4.10.0.84
+streamlit==1.35.0
+torch==2.5.0.dev20240726+cu121
+ultralytics==8.3.22
