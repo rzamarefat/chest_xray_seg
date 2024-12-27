@@ -20,3 +20,15 @@
 The dataset I used is [1](https://www.kaggle.com/datasets/iamtapendu/chest-x-ray-lungs-segmentation)
 
 ## Use Streamlit Demo UI
+1. Clone the repo, cd into the project and create a python env
+```
+python -m venv ./venv
+```
+2. Run the following command and wait for the dependencies to be installed
+```
+pip install -r requirements
+```
+3. Run the following
+```
+streamlit run app.py
+```
