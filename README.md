@@ -1,6 +1,4 @@
-# Lung Segmentation
-
-## Lung Segmentation On Chest Xray Images
+# Lung Segmentation On Chest Xray Images
 
 ## Models
 
