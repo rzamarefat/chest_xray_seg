@@ -7,14 +7,14 @@ import os
 import gdown
 
 class LungSeg:
-    def __init__(self, device="cuda", model_name="unetpp"):
+    def __init__(self, device="cuda", model_name="unet++"):
         self._device = device
         self._model_name = model_name
 
         os.makedirs(os.path.join(os.getcwd(), "weights"), exist_ok=True)
-        if self._model_name == "unetpp":
+        if self._model_name == "unet++":
             self._build_unetpp()
-        elif self._model_name == "yolo":
+        elif self._model_name == "yolov11":
             self._build_yolo()
         else:
             raise RuntimeError("Please provide a valid name for model_name")
@@ -59,11 +59,7 @@ class LungSeg:
         return batch_tensor
     
     def _segment_using_unetpp(self, imgs):
-        # cv2_imgs = []
-        # for img in imgs:
-        #     bgr_image = np.array(img)[..., ::-1]
-        #     # bgr_image = Image.fromarray(bgr_image)
-        #     cv2_imgs.append(bgr_image)
+        print("Using UNET++ to segment...")
         
         model_input = self._preprocess(imgs)
 
@@ -81,6 +77,7 @@ class LungSeg:
         return predicted_masks_holder
     
     def _segment_using_yolo(self, imgs):
+        print("Using YOLOv1 to segment...")
         preds = self._model.predict(imgs, retina_masks=True)
         predicted_masks_holder = []
         for pred in preds:
@@ -96,9 +93,9 @@ class LungSeg:
 
     def __call__(self, imgs):
         print(type(imgs))
-        if self._model_name == "unetpp":
+        if self._model_name == "unet++":
             predicted_masks_holder = self._segment_using_unetpp(imgs)
-        elif self._model_name == "yolo":
+        elif self._model_name == "yolov11":
             predicted_masks_holder = self._segment_using_yolo(imgs)
 
         print(predicted_masks_holder[0].shape)
